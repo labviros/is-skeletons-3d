@@ -111,55 +111,50 @@ def main():
 
         # waiting to receive a message from SkeletonsGrouper
         msg = channel.consume()
-        print(msg.topic)
-        print(len(msg.body))
 
         # start a span to collect time metrics
         tracer = Tracer(exporter, span_context=msg.extract_tracing())
         span = tracer.start_span(name='render')
 
-        if True:
-            # unpack the message
-            # if msg.topic == 'SkeletonsGrouper.0.Localization':
-            annotations = msg.unpack(ObjectAnnotations)
+        annotations = msg.unpack(ObjectAnnotations)
 
-            # plotting the image
-            ax.clear()
-            ax.view_init(azim=28, elev=32)
-            ax.set_xlim(op.x_axis.start, op.x_axis.end)
-            ax.set_xticks(np.arange(op.x_axis.start, op.x_axis.end + 0.5, 0.5))
-            ax.set_ylim(op.y_axis.start, op.y_axis.end)
-            ax.set_yticks(np.arange(op.y_axis.start, op.y_axis.end + 0.5, 0.5))
-            ax.set_zlim(op.z_axis.start, op.z_axis.end)
-            ax.set_zticks(np.arange(0, op.z_axis.end + 0.25, 0.5))
-            ax.set_xlabel('X', labelpad=20)
-            ax.set_ylabel('Y', labelpad=10)
-            ax.set_zlabel('Z', labelpad=5)
-            render_skeletons_3d(ax, annotations, links, colors)
-            fig.canvas.draw()
+        # plotting the image
+        ax.clear()
+        ax.view_init(azim=28, elev=32)
+        ax.set_xlim(op.x_axis.start, op.x_axis.end)
+        ax.set_xticks(np.arange(op.x_axis.start, op.x_axis.end + 0.5, 0.5))
+        ax.set_ylim(op.y_axis.start, op.y_axis.end)
+        ax.set_yticks(np.arange(op.y_axis.start, op.y_axis.end + 0.5, 0.5))
+        ax.set_zlim(op.z_axis.start, op.z_axis.end)
+        ax.set_zticks(np.arange(0, op.z_axis.end + 0.25, 0.5))
+        ax.set_xlabel('X', labelpad=20)
+        ax.set_ylabel('Y', labelpad=10)
+        ax.set_zlabel('Z', labelpad=5)
+        render_skeletons_3d(ax, annotations, links, colors)
+        fig.canvas.draw()
 
-            # generate a image from a matplotlib figure
-            data = np.fromstring(fig.canvas.tostring_rgb(), dtype=np.uint8, sep='')
-            view_3d = data.reshape(fig.canvas.get_width_height()[::-1] + (3,))
+        # generate a image from a matplotlib figure
+        data = np.fromstring(fig.canvas.tostring_rgb(), dtype=np.uint8, sep='')
+        view_3d = data.reshape(fig.canvas.get_width_height()[::-1] + (3,))
 
-            # publish the image
-            for group_id in list(op.group_ids):
-                rendered_msg = Message()
-                rendered_msg.topic = 'Skeletons3d.{}.Rendered'.format(group_id)
-                rendered_msg.pack(to_image(view_3d))
-                channel.publish(rendered_msg)
+        # publish the image
+        for group_id in list(op.group_ids):
+            rendered_msg = Message()
+            rendered_msg.topic = 'Skeletons3d.{}.Rendered'.format(group_id)
+            rendered_msg.pack(to_image(view_3d))
+            channel.publish(rendered_msg)
 
-            # end the spans
-            tracer.end_span()
+        # end the spans
+        tracer.end_span()
 
-            # logging usefull informations
-            info = {
-                'skeletons': len(annotations.objects),
-                'took_ms': {
-                    'service': round(span_duration_ms(span), 2)
-                }
+        # logging usefull informations
+        info = {
+            'skeletons': len(annotations.objects),
+            'took_ms': {
+                'service': round(span_duration_ms(span), 2)
             }
-            log.info('{}', str(info).replace("'", '"'))
+        }
+        log.info('{}', str(info).replace("'", '"'))
 
 
 if __name__ == "__main__":
