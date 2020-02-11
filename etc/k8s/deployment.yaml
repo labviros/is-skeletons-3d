@@ -40,7 +40,7 @@ spec:
     spec:
       containers:
         - name: service
-          image: luizcarloscf/is-skeletons-3d:0.0.1
+          image: labviros/is-skeletons-3d:0.0.1
           command: ["is-skeletons-3d"]
           args: ["/conf/options.json"]
           imagePullPolicy: Always

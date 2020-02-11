@@ -17,7 +17,7 @@ This services create a [matplotlib figure](https://matplotlib.org/api/_as_gen/ma
 
 For a demo experiment to understand the purpose of this application, watch the video on [youtube](https://www.youtube.com/watch?v=aZgmh9NsfWo). 
 
-<p align="center"><img src="etc/images/reconstruction.png" align=middle width=640pt height=261pt/></p>
+<p align="center"><img src="https://raw.githubusercontent.com/labviros/is-skeletons-3d/master/etc/images/reconstruction.png" align=middle width=640pt height=261pt/></p>
 
 It is important to remember that for this service work as expected, it depends on the following other services:
 * [is-cameras](https://github.com/labviros/is-cameras)
