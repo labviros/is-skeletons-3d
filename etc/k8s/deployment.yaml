@@ -1,0 +1,60 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: skeletons-3d
+  namespace: default
+data:
+  viewer: |-
+    {
+      "broker_uri": "amqp://rabbitmq.default",
+      "zipkin_uri": "http://zipkin.default:9411",
+      "group_ids": [
+          0
+      ],
+      "x_axis": {
+          "start": -1.5,
+          "end": 1.5
+      },
+      "y_axis": {
+          "start": -1.5,
+          "end": 1.5
+      },
+      "z_axis": {
+          "start": -0.25,
+          "end": 1.5
+      }
+    }
+
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: "is-skeletons-3d"
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: viewer
+    spec:
+      containers:
+        - name: service
+          image: luizcarloscf/is-skeletons-3d:0.0.1
+          command: ["is-skeletons-3d"]
+          args: ["/conf/options.json"]
+          imagePullPolicy: Always
+          resources:
+            limits:
+              cpu: "1"
+              memory: 128Mi
+          volumeMounts:
+            - name: options
+              mountPath: /conf/
+      volumes:
+        - name: options
+          configMap:
+            name: skeletons-3d
+            items:
+              - key: viewer
+                path: options.json

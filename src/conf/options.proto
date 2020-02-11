@@ -1,0 +1,28 @@
+ 
+syntax = "proto3";
+
+
+// All options
+message Skeletons3dOptions {
+    // Uri of the broker
+    string broker_uri = 1;
+    // Uri of the zipkin
+    string zipkin_uri = 2;
+    // Identifies diferents environments
+    repeated uint32 group_ids = 3;
+    // X axis on the world
+    Axis x_axis = 4;
+    // Y axis on the world
+    Axis y_axis = 5;
+    // Z axis on the world
+    Axis z_axis = 6;
+
+}
+
+// limits the Axis on the world
+message Axis {
+    // start of the Axis
+    float start = 1;
+    // end of the Axis
+    float end = 2;
+}
