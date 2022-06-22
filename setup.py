@@ -17,7 +17,7 @@ setup(
         'is-wire==1.2.0',
         'is-msgs==1.1.10',
         'opencv-python==4.1.0.*',
-        'numpy==1.16.1',
+        'numpy==1.22.0',
         'matplotlib==2.1.1',
         'opencensus-ext-zipkin==0.2.1',
         'python-dateutil==2.8.0',
